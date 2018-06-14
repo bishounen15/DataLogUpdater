@@ -1,0 +1,12 @@
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\bin\Debug\DataLogUpdater.exe.config
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\bin\Debug\DataLogUpdater.exe
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\bin\Debug\DataLogUpdater.pdb
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\bin\Debug\DataLogUpdater.xml
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.vbprojAssemblyReference.cache
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.frmMain.resources
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.Resources.resources
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.vbproj.GenerateResource.cache
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.vbproj.CoreCompileInputs.cache
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.exe
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.xml
+D:\Programs\VB\DataLogUpdater\DataLogUpdater\obj\Debug\DataLogUpdater.pdb
