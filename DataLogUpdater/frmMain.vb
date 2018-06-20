@@ -128,11 +128,13 @@ Public Class frmMain
             lblStatus.Text = "Ready"
             lblBrowse.Text = "-"
             lblWork.Text = "-"
+
             Me.ProgressBar1.Style = ProgressBarStyle.Blocks
             Me.ToolStrip1.Enabled = True
             Me.btnBrowse.Enabled = False
 
             Me.Focus()
+            Shell("explorer """ & txtDirectory.Text & """", AppWinStyle.NormalFocus)
         End If
     End Sub
 
@@ -143,6 +145,10 @@ Public Class frmMain
     Private Sub BrowseFiles(ByVal Path As String)
         Dim FileLocation As DirectoryInfo
         Dim fi As FileInfo()
+
+        Dim oExcel As Object = Nothing
+        Dim oBook As Object = Nothing
+        Dim oSheet As Object = Nothing
 
         If Directory.GetDirectories(Path).Count > 0 Then
             For Each Dir As String In Directory.GetDirectories(Path)
@@ -155,12 +161,35 @@ Public Class frmMain
                 FileLocation = New DirectoryInfo(Dir)
                 fi = FileLocation.GetFiles("*.csv")
 
+                Dim fc As Integer = fi.Count
+                Dim i As Integer = 9
+
+                If fc > 0 Then
+                    oExcel = CreateObject("Excel.Application")
+                    oBook = oExcel.Workbooks.Open(Application.StartupPath & "\Templates\Summary.csv", False)
+                    oSheet = oBook.Worksheets(1)
+                End If
+
                 For Each f As FileInfo In fi
                     Working_File = f.ToString
                     CurrentlyWorking()
 
-                    UpdateFile(Dir, f.ToString)
+                    UpdateFile(Dir, f.ToString, oSheet, i)
                 Next
+
+                If fc > 0 Then
+                    oBook.SaveAs(Dir & "\Consolidated.csv", 6)
+                    oBook.Close()
+                    oExcel.Quit()
+
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oSheet)
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oBook)
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oExcel)
+
+                    oSheet = Nothing
+                    oBook = Nothing
+                    oExcel = Nothing
+                End If
 
                 If Directory.GetDirectories(Dir).Count > 0 Then BrowseFiles(Dir)
             Next
@@ -176,19 +205,47 @@ Public Class frmMain
             Dim upd As FileInfo() = FileLocation.GetFiles("*_updated.csv")
 
             If upd.Count = 0 Then
+                Dim fc As Integer = fi.Count
+                Dim i As Integer = 9
+
+                If fc > 0 Then
+                    oExcel = CreateObject("Excel.Application")
+                    oBook = oExcel.Workbooks.Open(Application.StartupPath & "\Templates\Summary.csv", False)
+                    oSheet = oBook.Worksheets(1)
+                End If
+
                 For Each f As FileInfo In fi
                     Working_File = f.ToString
                     CurrentlyWorking()
 
-                    UpdateFile(Path, f.ToString)
+                    UpdateFile(Path, f.ToString, oSheet, i)
                 Next
+
+                If fc > 0 Then
+                    oBook.SaveAs(Path & "\Consolidated.csv", 6)
+                    oBook.Close()
+                    oExcel.Quit()
+
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oSheet)
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oBook)
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(oExcel)
+
+                    oSheet = Nothing
+                    oBook = Nothing
+                    oExcel = Nothing
+                End If
             End If
         End If
 
         EndProcessing()
     End Sub
 
-    Private Sub UpdateFile(ByVal Folder_Path As String, ByVal File_Name As String)
+    Private Function GetHours(ByVal date_str As String) As Integer
+        Dim dt() As String = date_str.Split(" ")
+        Return Hour(dt(1))
+    End Function
+
+    Private Sub UpdateFile(ByVal Folder_Path As String, ByVal File_Name As String, ByRef SummSheet As Object, ByRef SummIx As Integer)
         Dim oExcel As Object
         Dim oBook As Object
         Dim oSheet As Object
@@ -199,10 +256,42 @@ Public Class frmMain
 
         Dim i As Integer = 9
 
-        Dim f_val, g_val, i_val As Single
+        Dim f_val, g_val, i_val, sum_f, sum_g, sum_j, count_j As Single
+        Dim c_hour As Integer = -1
+        Dim hr_str As String = String.Empty
+
+        sum_f = 0
+        sum_g = 0
+        sum_j = 0
+        count_j = 0
 
         With oSheet
             While .Range("A" & i).Text <> ""
+                If c_hour <> GetHours(.Range("A" & i).Value) Then
+                    If c_hour >= 0 Then
+                        SummSheet.Range("A" & SummIx).Value = hr_str
+                        SummSheet.Range("B" & SummIx).Value = .Range("B" & i - 1).Value
+                        SummSheet.Range("C" & SummIx).Value = .Range("C" & i - 1).Value
+                        SummSheet.Range("D" & SummIx).Value = .Range("D" & i - 1).Value
+                        SummSheet.Range("E" & SummIx).Value = .Range("E" & i - 1).Value
+                        SummSheet.Range("F" & SummIx).Value = Math.Round(sum_f, 2)
+                        SummSheet.Range("G" & SummIx).Value = Math.Round(sum_g, 2)
+                        SummSheet.Range("H" & SummIx).Value = .Range("H" & i - 1).Value
+                        SummSheet.Range("I" & SummIx).Value = .Range("I" & i - 1).Value
+                        SummSheet.Range("J" & SummIx).Value = Math.Round(sum_j, 2)
+                        SummSheet.Range("K" & SummIx).Value = Math.Round(sum_j / count_j, 2)
+
+                        SummIx += 1
+                    End If
+
+                    c_hour = GetHours(.Range("A" & i).Value)
+                    hr_str = .Range("A" & i).Text
+                    sum_f = 0
+                    sum_g = 0
+                    sum_j = 0
+                    count_j = 0
+                End If
+
                 f_val = Replace(.Range("F" & i).Text, ",", ".")
                 g_val = Replace(.Range("G" & i).Text, ",", ".")
                 i_val = Replace(.Range("I" & i).Text, ",", ".")
@@ -215,8 +304,27 @@ Public Class frmMain
                     .Range("J" & i).Value = Math.Round((.Range("F" & i).Value - 4) * (1600 / 16), 0)
                 End If
 
+                sum_f += .Range("F" & i).Value
+                sum_g += .Range("G" & i).Value
+                sum_j += .Range("J" & i).Value
+                count_j += 1
+
                 i += 1
             End While
+
+            SummSheet.Range("A" & SummIx).Value = hr_str
+            SummSheet.Range("B" & SummIx).Value = .Range("B" & i - 1).Value
+            SummSheet.Range("C" & SummIx).Value = .Range("C" & i - 1).Value
+            SummSheet.Range("D" & SummIx).Value = .Range("D" & i - 1).Value
+            SummSheet.Range("E" & SummIx).Value = .Range("E" & i - 1).Value
+            SummSheet.Range("F" & SummIx).Value = Math.Round(sum_f, 2)
+            SummSheet.Range("G" & SummIx).Value = Math.Round(sum_g, 2)
+            SummSheet.Range("H" & SummIx).Value = .Range("H" & i - 1).Value
+            SummSheet.Range("I" & SummIx).Value = .Range("I" & i - 1).Value
+            SummSheet.Range("J" & SummIx).Value = Math.Round(sum_j, 2)
+            SummSheet.Range("K" & SummIx).Value = Math.Round(sum_j / count_j, 2)
+
+            SummIx += 1
         End With
 
         oBook.SaveAs(Folder_Path & "\" & Replace(File_Name, ".csv", "_updated.csv"), 6)

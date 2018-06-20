@@ -1,0 +1,8 @@
+Version CSV1|Tool CLUSTERCONTROLLER|Linebreaks CR/LF|Delimiter semicolon|Decimalpoint comma|Precision 2,,,,,,,,,
+,,,,,,,,,
+,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller
+,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller,Cluster Controller
+,165005798,165005798,165005798,165005798,165005798,165005798,165005798,165005798,165005798
+,Operation.Health,Operation.Evt.Prio,Operation.Evt.Msg,Operation.Evt.Dsc,InOut.AnInA1,InOut.AnInA2,InOut.AnInA3,InOut.AnInVol4,Env.ExInsol
+,Status,Status,Status,Status,Analog,Analog,Analog,Analog,Analog
+DD.MM.YYYY hh:mm ,,,,,mA,mA,mA,V,W/m²
