@@ -274,8 +274,8 @@ Public Class frmMain
                         SummSheet.Range("C" & SummIx).Value = .Range("C" & i - 1).Value
                         SummSheet.Range("D" & SummIx).Value = .Range("D" & i - 1).Value
                         SummSheet.Range("E" & SummIx).Value = .Range("E" & i - 1).Value
-                        SummSheet.Range("F" & SummIx).Value = Math.Round(sum_f, 2)
-                        SummSheet.Range("G" & SummIx).Value = Math.Round(sum_g, 2)
+                        SummSheet.Range("F" & SummIx).Value = Math.Round(sum_f / count_j, 2)
+                        SummSheet.Range("G" & SummIx).Value = Math.Round(sum_g / count_j, 2)
                         SummSheet.Range("H" & SummIx).Value = .Range("H" & i - 1).Value
                         SummSheet.Range("I" & SummIx).Value = .Range("I" & i - 1).Value
                         SummSheet.Range("J" & SummIx).Value = Math.Round(sum_j, 2)
@@ -317,8 +317,8 @@ Public Class frmMain
             SummSheet.Range("C" & SummIx).Value = .Range("C" & i - 1).Value
             SummSheet.Range("D" & SummIx).Value = .Range("D" & i - 1).Value
             SummSheet.Range("E" & SummIx).Value = .Range("E" & i - 1).Value
-            SummSheet.Range("F" & SummIx).Value = Math.Round(sum_f, 2)
-            SummSheet.Range("G" & SummIx).Value = Math.Round(sum_g, 2)
+            SummSheet.Range("F" & SummIx).Value = Math.Round(sum_f / count_j, 2)
+            SummSheet.Range("G" & SummIx).Value = Math.Round(sum_g / count_j, 2)
             SummSheet.Range("H" & SummIx).Value = .Range("H" & i - 1).Value
             SummSheet.Range("I" & SummIx).Value = .Range("I" & i - 1).Value
             SummSheet.Range("J" & SummIx).Value = Math.Round(sum_j, 2)
